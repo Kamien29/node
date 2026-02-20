@@ -1,19 +1,6 @@
-export function getMovies(req, res) {
-  const movies = [
-    { title: "avatar", director: "James Cameron" },
-    { title: "interstellar", director: "Christopher Nolan" },
-    {
-      title: "Dead poets society",
-      director: "idkman",
-      year: 2006
-    },
-    {
-      title: "Mateusz w ogrodzie Walasa",
-      director: "Piotr Obara",
-      year: 2026
-    }
-  ];
+import { movies } from "../data/movie.data.js";
 
+export function getMovies(req, res) {
   res.json(movies);
 }
 
@@ -24,8 +11,65 @@ export function createMovie(req, res, next) {
     return next(new Error("Provide title"));
   }
 
-  res.status(201).json({
-    message: "Dodano film",
-    ...movie
+  if (!movie.director) {
+    return next(new Error("Provide director"));
+  }
+
+  movies.push({
+    id: movies.length + 1,
+    title: movie.title,
+    director: movie.director,
+    likes: 0,
   });
+
+  res.status(201).json({ message: "Dodano film", ...movie });
+}
+
+export function getMovieById(req, res, next) {
+  const id = Number(req.params.id);
+
+  const movie = movies.find((m) => m.id === id);
+
+  if (!movie) {
+    const err = new Error("Movie not found");
+    err.status = 404;
+    return next(err);
+  }
+
+  res.json(movie);
+}
+
+
+export function incrementLikes(req, res, next) {
+  const id = Number(req.params.id);
+
+  const movie = movies.find(m => m.id === id);
+
+  if (!movie) {
+    const err = new Error("Film nie znaleziony");
+    err.status = 404;
+    return next(err);
+  }
+
+  movie.likes++;
+
+  res.status(200).json(movie);
+}
+
+export function decrementLikes(req, res, next) {
+  const id = Number(req.params.id);
+
+  const movie = movies.find(m => m.id === id);
+
+  if (!movie) {
+    const err = new Error("Film nie znaleziony");
+    err.status = 404;
+    return next(err);
+  }
+
+  if (movie.likes > 0) {
+    movie.likes--;
+  }
+
+  res.status(200).json(movie);
 }
