@@ -1,13 +1,10 @@
-import{router} from"express"
-const movieRoute = Router();
+import { Router } from "express";
+
+const movieRoute =  Router();
 // Nasze routingi
 
 
-const movies = [
-   
-    
-]
-app.get("/api/movies", (req, res) => {
+movieRoute.get("/api/movies", (req, res) => {
   const movies = [
     { title: "avatar", director: "James Cameron" },
     { title: "interstellar", director: "Christopher Nolan" },
@@ -23,4 +20,13 @@ app.get("/api/movies", (req, res) => {
   res.json(movies);
 });
 
-movieRoute.post("/api/movies", (req,res,next))
+// Dodawanie filmu (POST)
+movieRoute.post("/api/movies", (req, res) => {
+  const movie = req.body;
+  res.status(201).json({
+    message: "dodano film",
+    ...movie
+  });
+});
+
+export default movieRoute;
