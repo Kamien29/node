@@ -1,22 +1,18 @@
 import express from "express";
-import movieRoute from "./routes/movies.route.js"
-const app = express()
+import movieRoute from "./routes/movies.route.js";
 
+const app = express();
 const port = 3005;
 
-// Middleware do parsowania JSON
 app.use(express.json());
 
-// Prosty endpoint testowy
+// główna ścieżka filmów
+app.use("/api/movies", movieRoute);
+
 app.get("/", (req, res) => {
-  res.send("hello world");
+  res.send("Hello World!");
 });
 
-
-app.use("/", movieRoute)
-
-
-// Start serwera
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
